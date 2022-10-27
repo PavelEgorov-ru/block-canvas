@@ -24,7 +24,7 @@ module.exports = {
     "vue/multi-word-component-names": [
       "error",
       {
-        ignores: ["default", "error", "Index", "Error"],
+        ignores: ["default", "error", "index"],
       },
     ],
     "no-unused-expressions": [
