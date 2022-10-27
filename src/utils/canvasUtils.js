@@ -1,11 +1,12 @@
 import { fabric } from "fabric";
 
-let canvas = null;
-
 export const canvasInit = (id) => {
-  canvas = new fabric.Canvas(id, {});
+  return new fabric.Canvas(id, {
+    width: 1000,
+    height: 600,
+  });
 };
 
-export const canvasUnmount = () => {
+export const canvasUnmount = (canvas) => {
   canvas = null;
 };

@@ -2,7 +2,7 @@
   <div class="container">
     <h1>Блок над Canvas</h1>
     <button @click="addElement">Добавить новый элемент</button>
-    <canvas id="canvas" class="canvas" width="1000" height="600"></canvas>
+    <canvas ref="canvasRef" class="canvas"></canvas>
   </div>
 </template>
 
@@ -11,15 +11,18 @@ import { canvasInit, canvasUnmount } from "../utils/canvasUtils";
 
 export default {
   name: "CanvasContainer",
+  data() {
+    return {
+      canvas: null,
+    };
+  },
   mounted() {
-    canvasInit("canvas");
+    this.canvas = canvasInit(this.$refs.canvasRef);
   },
-  beforeUnmount() {
-    canvasUnmount();
-  },
+  beforeUnmount() {},
   methods: {
     addElement() {
-      console.log("клик по кнопке");
+      console.log(this.canvas.width);
     },
   },
 };
