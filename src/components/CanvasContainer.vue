@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { canvasInit, canvasUnmount } from "../utils/canvasUtils";
+import { canvasInit, addNewElement } from "../utils/canvasUtils";
 
 export default {
   name: "CanvasContainer",
@@ -22,7 +22,7 @@ export default {
   beforeUnmount() {},
   methods: {
     addElement() {
-      console.log(this.canvas.width);
+      addNewElement(this.canvas);
     },
   },
 };
