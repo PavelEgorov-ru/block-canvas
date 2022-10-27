@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import CanvasContainer from "@/components/CanvasContainer.vue";
+import CanvasContainer from "../components/CanvasContainer.vue";
+
 export default {
   name: "HomePage",
   components: {

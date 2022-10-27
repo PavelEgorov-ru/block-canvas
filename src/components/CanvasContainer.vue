@@ -6,14 +6,14 @@
 </template>
 
 <script>
-import { canvasInit, canvasUnmount } from "@/utils/canvasUtils";
+import { canvasInit, canvasUnmount } from "../utils/canvasUtils";
 
 export default {
   name: "CanvasContainer",
   mounted() {
     canvasInit("canvas");
   },
-  beforeDestroy() {
+  beforeUnmount() {
     canvasUnmount();
   },
 };
