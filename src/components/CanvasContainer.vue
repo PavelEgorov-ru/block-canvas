@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h1>Блок над Canvas</h1>
+    <button @click="addElement">Добавить новый элемент</button>
     <canvas id="canvas" class="canvas" width="1000" height="600"></canvas>
   </div>
 </template>
@@ -15,6 +16,11 @@ export default {
   },
   beforeUnmount() {
     canvasUnmount();
+  },
+  methods: {
+    addElement() {
+      console.log("клик по кнопке");
+    },
   },
 };
 </script>
