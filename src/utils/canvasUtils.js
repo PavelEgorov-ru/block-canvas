@@ -7,26 +7,74 @@ export const canvasInit = (id) => {
   });
 };
 
-export const addNewElement = (canvas) => {
-  const circle = new fabric.Circle({
-    radius: 100,
-    fill: "#eef",
-    scaleY: 0.5,
-    originX: "center",
-    originY: "center",
+export const addNewElement = (canvas, connection) => {
+  console.dir(connection);
+  const rect = new fabric.Rect({
+    width: 50,
+    height: 50,
   });
 
-  const text = new fabric.Text("hello world", {
-    fontSize: 30,
-    originX: "center",
-    originY: "center",
-  });
+  const circleArr = [];
 
-  const group = new fabric.Group([circle, text], {
+  // console.log(typeof connection);
+
+  for (let key in connection) {
+    console.log("ключ", connection[key], "из", connection);
+    if ((connection[key] = "top")) {
+      const circleTop = new fabric.Circle({
+        radius: 5,
+        fill: "#eef",
+        top: 0,
+        left: 25,
+        originX: "center",
+        originY: "center",
+      });
+      console.log(circleTop);
+      circleArr.push(circleTop);
+    }
+    // if ((connection[key] = "left")) {
+    //   const circleLeft = new fabric.Circle({
+    //     radius: 5,
+    //     fill: "#eef",
+    //     top: 25,
+    //     left: 50,
+    //     originX: "center",
+    //     originY: "center",
+    //   });
+    //   circleArr.push(circleLeft);
+    // }
+    // if ((connection[key] = "right")) {
+    //   const circleRight = new fabric.Circle({
+    //     radius: 5,
+    //     fill: "#eef",
+    //     top: 25,
+    //     left: 0,
+    //     originX: "center",
+    //     originY: "center",
+    //   });
+    //   circleArr.push(circleRight);
+    // }
+    if ((connection[key] = "bottom")) {
+      const circleBottom = new fabric.Circle({
+        radius: 5,
+        fill: "#eef",
+        top: 50,
+        left: 25,
+        originX: "center",
+        originY: "center",
+      });
+      circleArr.push(circleBottom);
+    }
+  }
+
+  // console.log(circleArr);
+
+  const group = new fabric.Group([rect, ...circleArr], {
     left: 150,
     top: 100,
-    angle: -10,
   });
+
+  circleArr.splice(0, circleArr.length);
 
   canvas.add(group);
 };
@@ -34,3 +82,39 @@ export const addNewElement = (canvas) => {
 export const canvasUnmount = (canvas) => {
   canvas = null;
 };
+
+// const circle1 = new fabric.Circle({
+//   radius: 5,
+//   fill: "#eef",
+//   top: 0,
+//   left: 25,
+//   originX: "center",
+//   originY: "center",
+// });
+
+// const circle2 = new fabric.Circle({
+//   radius: 5,
+//   fill: "#eef",
+//   top: 25,
+//   left: 50,
+//   originX: "center",
+//   originY: "center",
+// });
+
+// const circle3 = new fabric.Circle({
+//   radius: 5,
+//   fill: "#eef",
+//   top: 50,
+//   left: 25,
+//   originX: "center",
+//   originY: "center",
+// });
+
+// const circle4 = new fabric.Circle({
+//   radius: 5,
+//   fill: "#eef",
+//   top: 25,
+//   left: 0,
+//   originX: "center",
+//   originY: "center",
+// });
