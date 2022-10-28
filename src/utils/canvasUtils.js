@@ -11,7 +11,11 @@ export const addNewElement = (canvas, connection) => {
   const rect = new fabric.Rect({
     width: 50,
     height: 50,
+    backgroundColor: "black",
+    fill: "white",
   });
+
+  rect.on("mouse:move", (e) => console.log(e));
 
   const circleArr = [];
 
@@ -24,6 +28,7 @@ export const addNewElement = (canvas, connection) => {
         left: 25,
         originX: "center",
         originY: "center",
+        fill: "black",
       });
       circleArr.push(circleTop);
     }
@@ -35,6 +40,7 @@ export const addNewElement = (canvas, connection) => {
         left: 50,
         originX: "center",
         originY: "center",
+        fill: "black",
       });
       circleArr.push(circleLeft);
     }
@@ -46,6 +52,7 @@ export const addNewElement = (canvas, connection) => {
         left: 0,
         originX: "center",
         originY: "center",
+        fill: "black",
       });
       circleArr.push(circleRight);
     }
@@ -57,6 +64,7 @@ export const addNewElement = (canvas, connection) => {
         left: 25,
         originX: "center",
         originY: "center",
+        fill: "black",
       });
       circleArr.push(circleBottom);
     }
@@ -67,10 +75,21 @@ export const addNewElement = (canvas, connection) => {
     top: 100,
   });
 
+  const obj = canvas.getObjects();
+  console.log(obj);
+
+  group.on("mouse:dblclick", (event) => {
+    console.log(event);
+  });
+
   circleArr.splice(0, circleArr.length);
 
   canvas.add(group);
 };
+
+// canvas.on("mouse:down", (event) => {
+//   console.log(event);
+// });
 
 export const canvasUnmount = (canvas) => {
   canvas = null;
