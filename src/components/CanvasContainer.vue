@@ -11,37 +11,41 @@
             <p>Выберите расположение точек соединения</p>
             <div>
               <input
-                type="checkbox"
                 id="top"
-                value="top"
-                v-model="connection"
+                v-model="connection.top"
+                type="checkbox"
+                value="false"
+                @change="addCheckBox"
               />
               <label>top</label>
             </div>
             <div>
               <input
-                type="checkbox"
                 id="left"
-                value="left"
-                v-model="connection"
+                v-model="connection.left"
+                type="checkbox"
+                value="false"
+                @change="addCheckBox"
               />
               <label>left</label>
             </div>
             <div>
               <input
-                type="checkbox"
                 id="right"
-                value="right"
-                v-model="connection"
+                v-model="connection.right"
+                type="checkbox"
+                :value="connection.right"
+                @change="addCheckBox"
               />
               <label>right</label>
             </div>
             <div>
               <input
-                type="checkbox"
                 id="bottom"
-                value="bottom"
-                v-model="connection"
+                v-model="connection.bottom"
+                type="checkbox"
+                :value="connection.bottom"
+                @change="addCheckBox"
               />
               <label>bottom</label>
             </div>
@@ -65,7 +69,12 @@ export default {
   data() {
     return {
       canvas: null,
-      connection: [],
+      connection: {
+        top: false,
+        left: false,
+        right: false,
+        bottom: false,
+      },
     };
   },
   mounted() {
@@ -75,11 +84,13 @@ export default {
   methods: {
     addElement() {
       addNewElement(this.canvas, this.connection);
-      this.connection = [];
+      this.connection.top = false;
+      this.connection.left = false;
+      this.connection.right = false;
+      this.connection.bottom = false;
     },
     addCheckBox(e) {
-      // this.connection[e.target.id] = !this.connection[e.target.id];
-      console.log(e.target.id);
+      this.connection[e.target.id] = e.target.checked;
     },
   },
 };
