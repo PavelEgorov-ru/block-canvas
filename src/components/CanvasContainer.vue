@@ -79,9 +79,6 @@ export default {
   },
   mounted() {
     this.canvas = canvasInit(this.$refs.canvasRef);
-    // this.canvas.on("mouse:up", function (e) {
-    //   console.log("таргет", e.target); // should contain info on the clicked object
-    // });
   },
   beforeUnmount() {},
   methods: {

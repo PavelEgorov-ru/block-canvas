@@ -7,6 +7,25 @@ export const canvasInit = (id) => {
   });
 };
 
+const circlePosition = {
+  top: {
+    top: 0,
+    left: 25,
+  },
+  right: {
+    top: 25,
+    left: 50,
+  },
+  bottom: {
+    top: 50,
+    left: 25,
+  },
+  left: {
+    top: 25,
+    left: 0,
+  },
+};
+
 export const addNewElement = (canvas, connection) => {
   const rect = newRect();
   rect.on("mouse:move", (e) => console.log(e));
@@ -15,18 +34,18 @@ export const addNewElement = (canvas, connection) => {
 
   for (const key in connection) {
     if (key === "top" && connection[key]) {
-      const circleTop = newCircleTop();
+      const circleTop = newCircle(circlePosition.top);
       circleTop.on("mouseup", (event) => {
         circleTop.set({
           fill: "red",
         });
         canvas.renderAll();
-        console.log("event верхнего кружка", event.target);
+        console.log("event верхнего кружка", event.target.type);
       });
       circleArr.push(circleTop);
     }
     if (key === "right" && connection[key]) {
-      const circleLeft = newCircleLeft();
+      const circleLeft = newCircle(circlePosition.left);
       circleLeft.on("mouseup", (event) => {
         circleLeft.set({
           fill: "red",
@@ -37,7 +56,7 @@ export const addNewElement = (canvas, connection) => {
       circleArr.push(circleLeft);
     }
     if (key === "left" && connection[key]) {
-      const circleRight = newCircleRight();
+      const circleRight = newCircle(circlePosition.right);
       circleRight.on("mouseup", (event) => {
         circleRight.set({
           fill: "red",
@@ -48,7 +67,7 @@ export const addNewElement = (canvas, connection) => {
       circleArr.push(circleRight);
     }
     if (key === "bottom" && connection[key]) {
-      const circleBottom = newCircleBottom();
+      const circleBottom = newCircle(circlePosition.bottom);
       circleBottom.on("mouseup", (event) => {
         circleBottom.set({
           fill: "red",
@@ -66,7 +85,7 @@ export const addNewElement = (canvas, connection) => {
     subTargetCheck: true,
   });
   group.on("mouseup", (event) => {
-    console.log("event группы", event.target);
+    console.log("event группы", event.target.type);
   });
 
   circleArr.splice(0, circleArr.length);
@@ -83,48 +102,12 @@ const newRect = () => {
   });
 };
 
-const newCircleTop = () => {
+const newCircle = ({ top, left }) => {
   return new fabric.Circle({
     radius: 10,
     fill: "#eef",
-    top: 0,
-    left: 25,
-    originX: "center",
-    originY: "center",
-    fill: "black",
-  });
-};
-
-const newCircleLeft = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 25,
-    left: 50,
-    originX: "center",
-    originY: "center",
-    fill: "black",
-  });
-};
-
-const newCircleRight = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 25,
-    left: 0,
-    originX: "center",
-    originY: "center",
-    fill: "black",
-  });
-};
-
-const newCircleBottom = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 50,
-    left: 25,
+    top: top,
+    left: left,
     originX: "center",
     originY: "center",
     fill: "black",
