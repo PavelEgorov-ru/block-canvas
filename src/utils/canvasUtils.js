@@ -26,7 +26,14 @@ const circlePosition = {
   },
 };
 
+let isConnecting = false;
+
+let isConnectingStart = false;
+
 export const addNewElement = (canvas, connection) => {
+  let isCircleDown = false;
+  let isConnectingStop = true;
+
   const rect = newRect();
   rect.on("mouse:move", (e) => console.log(e));
 
@@ -36,56 +43,81 @@ export const addNewElement = (canvas, connection) => {
     if (key === "top" && connection[key]) {
       const circleTop = newCircle(circlePosition.top);
       circleTop.on("mouseup", (event) => {
+        isCircleDown = !isCircleDown;
+        isConnecting = !isConnecting;
+        if (!isConnecting) {
+          isCircleDown = false;
+        }
+
+        const colorCircle = isCircleDown ? "red" : "balck";
         circleTop.set({
-          fill: "red",
+          fill: colorCircle,
         });
+        console.log(isCircleDown);
         canvas.renderAll();
-        console.log("event верхнего кружка", event.target.type);
       });
       circleArr.push(circleTop);
     }
     if (key === "right" && connection[key]) {
       const circleLeft = newCircle(circlePosition.left);
       circleLeft.on("mouseup", (event) => {
+        isCircleDown = !isCircleDown;
+        isConnecting = !isConnecting;
+        const colorCircle = isCircleDown ? "red" : "balck";
         circleLeft.set({
-          fill: "red",
+          fill: colorCircle,
         });
+        console.log(isCircleDown);
         canvas.renderAll();
-        console.log("event левого кружка", event.target);
       });
       circleArr.push(circleLeft);
     }
     if (key === "left" && connection[key]) {
       const circleRight = newCircle(circlePosition.right);
       circleRight.on("mouseup", (event) => {
+        isCircleDown = !isCircleDown;
+        isConnecting = !isConnecting;
+        const colorCircle = isCircleDown ? "red" : "balck";
         circleRight.set({
-          fill: "red",
+          fill: colorCircle,
         });
+        console.log(isCircleDown);
         canvas.renderAll();
-        console.log("event правого кружка", event.target);
       });
       circleArr.push(circleRight);
     }
     if (key === "bottom" && connection[key]) {
       const circleBottom = newCircle(circlePosition.bottom);
       circleBottom.on("mouseup", (event) => {
+        isCircleDown = !isCircleDown;
+        isConnecting = !isConnecting;
+        const colorCircle = isCircleDown ? "red" : "balck";
         circleBottom.set({
-          fill: "red",
+          fill: colorCircle,
         });
+        console.log(isCircleDown);
         canvas.renderAll();
-        console.log("event нижнего кружка", event.target);
       });
       circleArr.push(circleBottom);
     }
   }
-
-  const group = new fabric.Group([rect, ...circleArr], {
-    left: 150,
-    top: 100,
-    subTargetCheck: true,
-  });
-  group.on("mouseup", (event) => {
-    console.log("event группы", event.target.type);
+  const group = newGroup([rect, ...circleArr]);
+  group.on("mousedown", (event) => {
+    console.log("слушатель сработал");
+    if (isCircleDown && isConnecting) {
+      console.log("изменение при true");
+      group.set({
+        lockMovementX: true,
+        lockMovementY: true,
+      });
+    }
+    if (isCircleDown && !isConnecting) {
+      group.set({
+        lockMovementX: false,
+        lockMovementY: false,
+      });
+    }
+    canvas.renderAll();
   });
 
   circleArr.splice(0, circleArr.length);
@@ -99,6 +131,7 @@ const newRect = () => {
     height: 50,
     backgroundColor: "black",
     fill: "white",
+    // objectCaching: false,
   });
 };
 
@@ -111,6 +144,16 @@ const newCircle = ({ top, left }) => {
     originX: "center",
     originY: "center",
     fill: "black",
+    // objectCaching: false,
+  });
+};
+
+const newGroup = (elements) => {
+  return new fabric.Group([...elements], {
+    left: 150,
+    top: 100,
+    subTargetCheck: true,
+    // objectCaching: false,
   });
 };
 
