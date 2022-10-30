@@ -141,6 +141,7 @@ function makeLine(coords, canvas) {
     stroke: "red",
     strokeWidth: 5,
   });
+
   canvas.add(newLine);
 }
 
