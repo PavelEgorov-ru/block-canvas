@@ -1,12 +1,5 @@
 import { fabric } from "fabric";
 
-export const canvasInit = (id) => {
-  return new fabric.Canvas(id, {
-    width: 1000,
-    height: 600,
-  });
-};
-
 const circlePosition = {
   top: {
     top: 0,
@@ -26,13 +19,17 @@ const circlePosition = {
   },
 };
 
+export const canvasInit = (id) => {
+  return new fabric.Canvas(id, {
+    width: 1000,
+    height: 600,
+  });
+};
+
 let isConnecting = false;
 
-let isConnectingStart = false;
-
-export const addNewElement = (canvas, connection) => {
+export function addNewElement(canvas, connection) {
   let isCircleDown = false;
-  let isConnectingStop = true;
 
   const rect = newRect();
   rect.on("mouse:move", (e) => console.log(e));
@@ -42,76 +39,61 @@ export const addNewElement = (canvas, connection) => {
   for (const key in connection) {
     if (key === "top" && connection[key]) {
       const circleTop = newCircle(circlePosition.top);
-      circleTop.on("mouseup", (event) => {
-        isCircleDown = !isCircleDown;
-        isConnecting = !isConnecting;
-        if (!isConnecting) {
-          isCircleDown = false;
-        }
-
-        const colorCircle = isCircleDown ? "red" : "balck";
-        circleTop.set({
-          fill: colorCircle,
-        });
-        console.log(isCircleDown);
-        canvas.renderAll();
+      circleTop.on("mousedown", function () {
+        listenerCircleMouseDown(canvas, circleTop, isCircleDown);
+      });
+      circleTop.on("mouseup", function () {
+        console.log("отпустил");
+        listenerCircleMouseUp(canvas, circleTop, isCircleDown);
       });
       circleArr.push(circleTop);
     }
     if (key === "right" && connection[key]) {
       const circleLeft = newCircle(circlePosition.left);
-      circleLeft.on("mouseup", (event) => {
-        isCircleDown = !isCircleDown;
-        isConnecting = !isConnecting;
-        const colorCircle = isCircleDown ? "red" : "balck";
-        circleLeft.set({
-          fill: colorCircle,
-        });
-        console.log(isCircleDown);
-        canvas.renderAll();
+      circleLeft.on("mousedown", function () {
+        listenerCircleMouseDown(canvas, circleLeft, isCircleDown);
+      });
+      circleLeft.on("mouseup", function () {
+        console.log("отпустил");
+        listenerCircleMouseUp(canvas, circleLeft, isCircleDown);
       });
       circleArr.push(circleLeft);
     }
     if (key === "left" && connection[key]) {
       const circleRight = newCircle(circlePosition.right);
-      circleRight.on("mouseup", (event) => {
-        isCircleDown = !isCircleDown;
-        isConnecting = !isConnecting;
-        const colorCircle = isCircleDown ? "red" : "balck";
-        circleRight.set({
-          fill: colorCircle,
-        });
-        console.log(isCircleDown);
-        canvas.renderAll();
+      circleRight.on("mousedown", function () {
+        listenerCircleMouseDown(canvas, circleRight, isCircleDown);
+      });
+      circleRight.on("mouseup", function () {
+        console.log("отпустил");
+        listenerCircleMouseUp(canvas, circleRight, isCircleDown);
       });
       circleArr.push(circleRight);
     }
     if (key === "bottom" && connection[key]) {
       const circleBottom = newCircle(circlePosition.bottom);
-      circleBottom.on("mouseup", (event) => {
-        isCircleDown = !isCircleDown;
-        isConnecting = !isConnecting;
-        const colorCircle = isCircleDown ? "red" : "balck";
-        circleBottom.set({
-          fill: colorCircle,
-        });
-        console.log(isCircleDown);
-        canvas.renderAll();
+      circleBottom.on("mousedown", function () {
+        listenerCircleMouseDown(canvas, circleBottom, isCircleDown);
+      });
+      circleBottom.on("mouseup", function () {
+        console.log("отпустил");
+        listenerCircleMouseUp(canvas, circleBottom, isCircleDown);
       });
       circleArr.push(circleBottom);
     }
   }
   const group = newGroup([rect, ...circleArr]);
-  group.on("mousedown", (event) => {
-    console.log("слушатель сработал");
-    if (isCircleDown && isConnecting) {
-      console.log("изменение при true");
+  group.on("mouseover", (event) => {
+    console.log(event.target);
+    console.log("isConnecting в слушателе группы при событии", isCircleDown);
+    if (isCircleDown) {
+      console.log(isCircleDown);
       group.set({
         lockMovementX: true,
         lockMovementY: true,
       });
     }
-    if (isCircleDown && !isConnecting) {
+    if (!isCircleDown) {
       group.set({
         lockMovementX: false,
         lockMovementY: false,
@@ -123,7 +105,31 @@ export const addNewElement = (canvas, connection) => {
   circleArr.splice(0, circleArr.length);
 
   canvas.add(group);
-};
+}
+
+function listenerCircleMouseDown(canvas, circleObj, isCircleDown) {
+  isCircleDown = true;
+  isConnecting = true;
+  if (!isConnecting) {
+    isCircleDown = false;
+  }
+  const colorCircle = isCircleDown ? "red" : "balck";
+  circleObj.set({
+    fill: colorCircle,
+  });
+  canvas.renderAll();
+  console.log("нажатие кружка ", isCircleDown);
+}
+
+function listenerCircleMouseUp(canvas, circleObj, isCircleDown) {
+  isConnecting = false;
+  isCircleDown = false;
+  const colorCircle = isCircleDown ? "red" : "balck";
+  circleObj.set({
+    fill: colorCircle,
+  });
+  canvas.renderAll();
+}
 
 const newRect = () => {
   return new fabric.Rect({
@@ -131,7 +137,6 @@ const newRect = () => {
     height: 50,
     backgroundColor: "black",
     fill: "white",
-    // objectCaching: false,
   });
 };
 
@@ -144,7 +149,6 @@ const newCircle = ({ top, left }) => {
     originX: "center",
     originY: "center",
     fill: "black",
-    // objectCaching: false,
   });
 };
 
@@ -153,10 +157,9 @@ const newGroup = (elements) => {
     left: 150,
     top: 100,
     subTargetCheck: true,
-    // objectCaching: false,
   });
 };
 
-export const canvasUnmount = (canvas) => {
-  canvas = null;
-};
+// export const canvasUnmount = (canvas) => {
+//   canvas = null;
+// };

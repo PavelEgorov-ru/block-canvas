@@ -56,7 +56,7 @@
         <button class="button">Кнопка 3</button>
         <button class="button">Кнопка 4</button>
       </div>
-      <canvas ref="canvasRef" class="canvas"></canvas>
+      <canvas id="canvas" ref="canvasRef" class="canvas"></canvas>
     </div>
   </div>
 </template>
@@ -80,7 +80,6 @@ export default {
   mounted() {
     this.canvas = canvasInit(this.$refs.canvasRef);
   },
-  beforeUnmount() {},
   methods: {
     addElement() {
       addNewElement(this.canvas, this.connection);
