@@ -1,5 +1,24 @@
 import { fabric } from "fabric";
 
+const circlePosition = {
+  top: {
+    top: -25,
+    left: 0,
+  },
+  right: {
+    top: 0,
+    left: 25,
+  },
+  bottom: {
+    top: 25,
+    left: 0,
+  },
+  left: {
+    top: 0,
+    left: -25,
+  },
+};
+
 export const canvasInit = (id) => {
   return new fabric.Canvas(id, {
     width: 1000,
@@ -7,73 +26,128 @@ export const canvasInit = (id) => {
   });
 };
 
-export const addNewElement = (canvas, connection) => {
+export function addNewElement(canvas, connection) {
+  let isCircleDown = false;
   const rect = newRect();
-  rect.on("mouse:move", (e) => console.log(e));
-
   const circleArr = [];
-
+  const group = newGroup([rect, ...circleArr]);
+  group.line1 = {};
+  group.line2 = {};
+  group.line3 = {};
+  group.line4 = {};
   for (const key in connection) {
     if (key === "top" && connection[key]) {
-      const circleTop = newCircleTop();
-      circleTop.on("mouseup", (event) => {
-        circleTop.set({
-          fill: "red",
-        });
-        canvas.renderAll();
-        console.log("event верхнего кружка", event.target);
+      const circleTop = newCircle(circlePosition.top);
+      console.log(group.line1);
+      group.add(circleTop);
+      circleTop.on("mousedown", function (event) {
+        listenerCircleMouseDown(canvas, circleTop, group, isCircleDown);
+        newLine(event, canvas, group.line1);
       });
-      circleArr.push(circleTop);
+      circleTop.on("mouseup", function () {
+        listenerCircleMouseUp(canvas, circleTop, group, isCircleDown);
+      });
     }
     if (key === "right" && connection[key]) {
-      const circleLeft = newCircleLeft();
-      circleLeft.on("mouseup", (event) => {
-        circleLeft.set({
-          fill: "red",
-        });
-        canvas.renderAll();
-        console.log("event левого кружка", event.target);
+      const circleLeft = newCircle(circlePosition.left);
+      group.add(circleLeft);
+      circleLeft.on("mousedown", function (event) {
+        listenerCircleMouseDown(canvas, circleLeft, group, isCircleDown);
+        newLine(event, canvas, group.line2);
       });
-      circleArr.push(circleLeft);
+      circleLeft.on("mouseup", function () {
+        listenerCircleMouseUp(canvas, circleLeft, group, isCircleDown);
+      });
     }
     if (key === "left" && connection[key]) {
-      const circleRight = newCircleRight();
-      circleRight.on("mouseup", (event) => {
-        circleRight.set({
-          fill: "red",
-        });
-        canvas.renderAll();
-        console.log("event правого кружка", event.target);
+      const circleRight = newCircle(circlePosition.right);
+      group.add(circleRight);
+      circleRight.on("mousedown", function (event) {
+        listenerCircleMouseDown(canvas, circleRight, group, isCircleDown);
+        newLine(event, canvas, group.line3);
       });
-      circleArr.push(circleRight);
+      circleRight.on("mouseup", function () {
+        listenerCircleMouseUp(canvas, circleRight, group, isCircleDown);
+      });
     }
     if (key === "bottom" && connection[key]) {
-      const circleBottom = newCircleBottom();
-      circleBottom.on("mouseup", (event) => {
-        circleBottom.set({
-          fill: "red",
-        });
-        canvas.renderAll();
-        console.log("event нижнего кружка", event.target);
+      const circleBottom = newCircle(circlePosition.bottom);
+      group.add(circleBottom);
+      circleBottom.on("mousedown", function (event) {
+        listenerCircleMouseDown(canvas, circleBottom, group, isCircleDown);
+        newLine(event, canvas, group.line4);
       });
-      circleArr.push(circleBottom);
+      circleBottom.on("mouseup", function () {
+        listenerCircleMouseUp(canvas, circleBottom, group, isCircleDown);
+      });
     }
   }
-
-  const group = new fabric.Group([rect, ...circleArr], {
-    left: 150,
-    top: 100,
-    subTargetCheck: true,
-  });
-  group.on("mouseup", (event) => {
-    console.log("event группы", event.target);
-  });
 
   circleArr.splice(0, circleArr.length);
 
   canvas.add(group);
-};
+}
 
+function listenerCircleMouseDown(canvas, circleObj, groupObj, isCircleDown) {
+  console.log("нажал мышку");
+  isCircleDown = true;
+  const colorCircle = isCircleDown ? "red" : "balck";
+  circleObj.set({
+    fill: colorCircle,
+  });
+  groupObj.set({
+    lockMovementX: true,
+    lockMovementY: true,
+  });
+  canvas.renderAll();
+}
+
+const coords = [];
+function listenerCircleMouseUp(canvas, circleObj, groupObj, isCircleDown) {
+  makeLine(coords, canvas);
+  canvas.off("mouse:move", deleteEvents());
+  isCircleDown = false;
+  const colorCircle = isCircleDown ? "red" : "balck";
+  circleObj.set({
+    fill: colorCircle,
+  });
+  groupObj.set({
+    lockMovementX: false,
+    lockMovementY: false,
+  });
+
+  canvas.renderAll();
+}
+
+function newLine(event, canvas, groupLineStart) {
+  const test = event.absolutePointer;
+  groupLineStart.x = test.x;
+  groupLineStart.y = test.y;
+  coords.push(groupLineStart.x);
+  coords.push(groupLineStart.y);
+  console.log(coords);
+  console.log("событие при нажатии мышки", event.absolutePointer.x);
+  canvas.on("mouse:move", (event) => {
+    console.log(event);
+    coords[2] = event.pointer.x;
+    coords[3] = event.pointer.y;
+  });
+}
+
+function makeLine(coords, canvas) {
+  console.log("вызов линии");
+  const newLine = new fabric.Line(coords, {
+    fill: "red",
+    stroke: "red",
+    strokeWidth: 5,
+  });
+
+  canvas.add(newLine);
+}
+
+function deleteEvents() {
+  console.log("удалился обработчик событий");
+}
 const newRect = () => {
   return new fabric.Rect({
     width: 50,
@@ -83,54 +157,22 @@ const newRect = () => {
   });
 };
 
-const newCircleTop = () => {
+const newCircle = ({ top, left }) => {
   return new fabric.Circle({
     radius: 10,
     fill: "#eef",
-    top: 0,
-    left: 25,
+    top: top,
+    left: left,
     originX: "center",
     originY: "center",
     fill: "black",
   });
 };
 
-const newCircleLeft = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 25,
-    left: 50,
-    originX: "center",
-    originY: "center",
-    fill: "black",
+const newGroup = (elements) => {
+  return new fabric.Group([...elements], {
+    left: 150,
+    top: 100,
+    subTargetCheck: true,
   });
-};
-
-const newCircleRight = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 25,
-    left: 0,
-    originX: "center",
-    originY: "center",
-    fill: "black",
-  });
-};
-
-const newCircleBottom = () => {
-  return new fabric.Circle({
-    radius: 10,
-    fill: "#eef",
-    top: 50,
-    left: 25,
-    originX: "center",
-    originY: "center",
-    fill: "black",
-  });
-};
-
-export const canvasUnmount = (canvas) => {
-  canvas = null;
 };
