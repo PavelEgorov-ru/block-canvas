@@ -36,8 +36,31 @@ export function addNewElement(canvas, connection) {
 
   const circleArr = [];
 
+  const group = newGroup([rect, ...circleArr]);
+  group.on("mouseover", (event) => {
+    console.log(event.target);
+    console.log("isConnecting в слушателе группы при событии", isCircleDown);
+    if (isCircleDown) {
+      console.log(isCircleDown);
+      group.set({
+        lockMovementX: true,
+        lockMovementY: true,
+      });
+    }
+    if (!isCircleDown) {
+      group.set({
+        lockMovementX: false,
+        lockMovementY: false,
+      });
+    }
+    canvas.renderAll();
+  });
+
+  console.log(group);
+
   for (const key in connection) {
     if (key === "top" && connection[key]) {
+      console.log(group);
       const circleTop = newCircle(circlePosition.top);
       circleTop.on("mousedown", function () {
         listenerCircleMouseDown(canvas, circleTop, isCircleDown);
@@ -82,25 +105,6 @@ export function addNewElement(canvas, connection) {
       circleArr.push(circleBottom);
     }
   }
-  const group = newGroup([rect, ...circleArr]);
-  group.on("mouseover", (event) => {
-    console.log(event.target);
-    console.log("isConnecting в слушателе группы при событии", isCircleDown);
-    if (isCircleDown) {
-      console.log(isCircleDown);
-      group.set({
-        lockMovementX: true,
-        lockMovementY: true,
-      });
-    }
-    if (!isCircleDown) {
-      group.set({
-        lockMovementX: false,
-        lockMovementY: false,
-      });
-    }
-    canvas.renderAll();
-  });
 
   circleArr.splice(0, circleArr.length);
 
@@ -118,7 +122,6 @@ function listenerCircleMouseDown(canvas, circleObj, isCircleDown) {
     fill: colorCircle,
   });
   canvas.renderAll();
-  console.log("нажатие кружка ", isCircleDown);
 }
 
 function listenerCircleMouseUp(canvas, circleObj, isCircleDown) {
