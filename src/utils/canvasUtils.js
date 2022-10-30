@@ -39,14 +39,12 @@ export function addNewElement(canvas, connection) {
 
   for (const key in connection) {
     if (key === "top" && connection[key]) {
-      console.log(group);
       const circleTop = newCircle(circlePosition.top);
       group.add(circleTop);
       circleTop.on("mousedown", function () {
         listenerCircleMouseDown(canvas, circleTop, group, isCircleDown);
       });
       circleTop.on("mouseup", function () {
-        console.log("отпустил");
         listenerCircleMouseUp(canvas, circleTop, group, isCircleDown);
       });
     }
@@ -57,7 +55,6 @@ export function addNewElement(canvas, connection) {
         listenerCircleMouseDown(canvas, circleLeft, group, isCircleDown);
       });
       circleLeft.on("mouseup", function () {
-        console.log("отпустил");
         listenerCircleMouseUp(canvas, circleLeft, group, isCircleDown);
       });
     }
@@ -68,7 +65,6 @@ export function addNewElement(canvas, connection) {
         listenerCircleMouseDown(canvas, circleRight, group, isCircleDown);
       });
       circleRight.on("mouseup", function () {
-        console.log("отпустил");
         listenerCircleMouseUp(canvas, circleRight, group, isCircleDown);
       });
     }
@@ -79,7 +75,6 @@ export function addNewElement(canvas, connection) {
         listenerCircleMouseDown(canvas, circleBottom, group, isCircleDown);
       });
       circleBottom.on("mouseup", function () {
-        console.log("отпустил");
         listenerCircleMouseUp(canvas, circleBottom, group, isCircleDown);
       });
     }
@@ -91,12 +86,12 @@ export function addNewElement(canvas, connection) {
 }
 
 function listenerCircleMouseDown(canvas, circleObj, groupObj, isCircleDown) {
+  console.log("нажал мышку");
   isCircleDown = true;
   const colorCircle = isCircleDown ? "red" : "balck";
   circleObj.set({
     fill: colorCircle,
   });
-
   groupObj.set({
     lockMovementX: true,
     lockMovementY: true,
@@ -105,6 +100,7 @@ function listenerCircleMouseDown(canvas, circleObj, groupObj, isCircleDown) {
 }
 
 function listenerCircleMouseUp(canvas, circleObj, groupObj, isCircleDown) {
+  console.log("отпустил мышку");
   isCircleDown = false;
   const colorCircle = isCircleDown ? "red" : "balck";
   circleObj.set({
@@ -145,7 +141,3 @@ const newGroup = (elements) => {
     subTargetCheck: true,
   });
 };
-
-// export const canvasUnmount = (canvas) => {
-//   canvas = null;
-// };
