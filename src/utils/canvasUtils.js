@@ -31,14 +31,18 @@ export function addNewElement(canvas, connection) {
   const rect = newRect();
   const circleArr = [];
   const group = newGroup([rect, ...circleArr]);
-  group.on("moving", () => console.log("навели на элемент"));
+  group.line1 = {};
+  group.line2 = {};
+  group.line3 = {};
+  group.line4 = {};
   for (const key in connection) {
     if (key === "top" && connection[key]) {
       const circleTop = newCircle(circlePosition.top);
+      console.log(group.line1);
       group.add(circleTop);
       circleTop.on("mousedown", function (event) {
         listenerCircleMouseDown(canvas, circleTop, group, isCircleDown);
-        newLine(event, canvas);
+        newLine(event, canvas, group.line1);
       });
       circleTop.on("mouseup", function () {
         listenerCircleMouseUp(canvas, circleTop, group, isCircleDown);
@@ -49,7 +53,7 @@ export function addNewElement(canvas, connection) {
       group.add(circleLeft);
       circleLeft.on("mousedown", function (event) {
         listenerCircleMouseDown(canvas, circleLeft, group, isCircleDown);
-        newLine(event, canvas);
+        newLine(event, canvas, group.line2);
       });
       circleLeft.on("mouseup", function () {
         listenerCircleMouseUp(canvas, circleLeft, group, isCircleDown);
@@ -60,7 +64,7 @@ export function addNewElement(canvas, connection) {
       group.add(circleRight);
       circleRight.on("mousedown", function (event) {
         listenerCircleMouseDown(canvas, circleRight, group, isCircleDown);
-        newLine(event, canvas);
+        newLine(event, canvas, group.line3);
       });
       circleRight.on("mouseup", function () {
         listenerCircleMouseUp(canvas, circleRight, group, isCircleDown);
@@ -71,7 +75,7 @@ export function addNewElement(canvas, connection) {
       group.add(circleBottom);
       circleBottom.on("mousedown", function (event) {
         listenerCircleMouseDown(canvas, circleBottom, group, isCircleDown);
-        newLine(event, canvas);
+        newLine(event, canvas, group.line4);
       });
       circleBottom.on("mouseup", function () {
         listenerCircleMouseUp(canvas, circleBottom, group, isCircleDown);
@@ -98,7 +102,9 @@ function listenerCircleMouseDown(canvas, circleObj, groupObj, isCircleDown) {
   canvas.renderAll();
 }
 
+const coords = [];
 function listenerCircleMouseUp(canvas, circleObj, groupObj, isCircleDown) {
+  makeLine(coords, canvas);
   canvas.off("mouse:move", deleteEvents());
   isCircleDown = false;
   const colorCircle = isCircleDown ? "red" : "balck";
@@ -113,11 +119,29 @@ function listenerCircleMouseUp(canvas, circleObj, groupObj, isCircleDown) {
   canvas.renderAll();
 }
 
-function newLine(event, canvas) {
-  console.log("событие при нажатии мышки", event);
-  canvas.on("mouse:move", (options) => {
-    console.log(options);
+function newLine(event, canvas, groupLineStart) {
+  const test = event.absolutePointer;
+  groupLineStart.x = test.x;
+  groupLineStart.y = test.y;
+  coords.push(groupLineStart.x);
+  coords.push(groupLineStart.y);
+  console.log(coords);
+  console.log("событие при нажатии мышки", event.absolutePointer.x);
+  canvas.on("mouse:move", (event) => {
+    console.log(event);
+    coords[2] = event.pointer.x;
+    coords[3] = event.pointer.y;
   });
+}
+
+function makeLine(coords, canvas) {
+  console.log("вызов линии");
+  const newLine = new fabric.Line(coords, {
+    fill: "red",
+    stroke: "red",
+    strokeWidth: 5,
+  });
+  canvas.add(newLine);
 }
 
 function deleteEvents() {
